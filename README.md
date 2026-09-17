@@ -1,14 +1,16 @@
-# Welcome to your Lovable project
+# Shopify Launchpad
+
+Here over here I have like the coming soon website, everything. I want you like to make it, uh, working, connected to Shopify and, um, after that I want you to make it available for GitHub so I can upload it and, yeah, test it before you give me the final thing, it should work. It should, uh, on Shopify, it should have the live view, how many people are visiting currently, uh, email subscribers list, uh, numbers and emails that I have, uh, received. Okay? Got it? https://www.instagram.com/ryvora.pk?stkn=anR5eTQ4c3drb2sw
 
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/0b78f130-ce7a-44e3-bc0d-6ba590dabb88).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +22,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
