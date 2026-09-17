@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      site_presence: {
+        Row: {
+          first_seen: string
+          last_seen: string
+          visitor_id: string
+        }
+        Insert: {
+          first_seen?: string
+          last_seen?: string
+          visitor_id: string
+        }
+        Update: {
+          first_seen?: string
+          last_seen?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          launch_notified_at: string | null
+          shopify_customer_id: string | null
+          shopify_error: string | null
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          launch_notified_at?: string | null
+          shopify_customer_id?: string | null
+          shopify_error?: string | null
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          launch_notified_at?: string | null
+          shopify_customer_id?: string | null
+          shopify_error?: string | null
+          source?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
