@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 
-import { getAdminStats } from "@/lib/ryvora.functions";
+import { getAdminStats, syncToShopify } from "@/lib/ryvora.functions";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -29,6 +29,45 @@ function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const unlocked = useRef<string | null>(null);
+  const pushSubscribers = useServerFn(syncToShopify);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
+
+  const downloadCsv = () => {
+    const rows = [
+      "Email,Accepts Email Marketing,Tags,Signed up",
+      ...(stats?.subscribers ?? []).map(
+        (s) => `${s.email},yes,ryvora-coming-soon,${new Date(s.created_at).toISOString()}`,
+      ),
+    ].join("\n");
+    const url = URL.createObjectURL(new Blob([rows], { type: "text/csv" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "ryvora-subscribers.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const pushToShopify = async () => {
+    if (!unlocked.current) return;
+    setSyncing(true);
+    setSyncMessage(null);
+    try {
+      const result = await pushSubscribers({ data: { passcode: unlocked.current } });
+      setSyncMessage(
+        result.synced > 0
+          ? `${result.synced} email(s) added to your Shopify customers.`
+          : result.pending === 0
+            ? "Everything is already in Shopify."
+            : "Shopify is not accepting customer additions yet — claim your store, then try again. Meanwhile use the CSV.",
+      );
+      void load(unlocked.current);
+    } catch {
+      setSyncMessage("Could not reach Shopify. Try again in a moment.");
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const load = async (code: string) => {
     setLoading(true);
