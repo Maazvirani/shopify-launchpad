@@ -102,6 +102,25 @@ function AdminPage() {
         </div>
       </div>
 
+      <div className="mt-8 flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={downloadCsv}
+          className="text-eyebrow h-11 border border-input px-5 transition-colors hover:bg-accent"
+        >
+          Download emails (CSV)
+        </button>
+        <button
+          type="button"
+          onClick={pushToShopify}
+          disabled={syncing}
+          className="text-eyebrow h-11 bg-primary px-5 text-primary-foreground disabled:opacity-60"
+        >
+          {syncing ? "Sending…" : "Send to Shopify"}
+        </button>
+      </div>
+      {syncMessage && <p className="text-eyebrow mt-3 text-muted-foreground">{syncMessage}</p>}
+
       <h2 className="text-eyebrow mt-12 text-muted-foreground">Emails collected</h2>
       <ul className="mt-4 divide-y divide-border border border-border">
         {stats.subscribers.length === 0 && (
