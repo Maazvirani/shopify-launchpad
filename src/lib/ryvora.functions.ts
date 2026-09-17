@@ -87,6 +87,35 @@ export const heartbeat = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/** Retries pushing any subscribers that Shopify previously refused (e.g. before the store was claimed). */
+export const syncToShopify = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => z.object({ passcode: z.string().max(200) }).parse(data))
+  .handler(async ({ data }) => {
+    const expected = process.env["RYVORA_ADMIN_PASSCODE"];
+    if (!expected || data.passcode !== expected) throw new Error("Wrong passcode.");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: pending } = await supabaseAdmin
+      .from("subscribers")
+      .select("id, email")
+      .is("shopify_customer_id", null)
+      .limit(100);
+
+    let synced = 0;
+    let lastError: string | null = null;
+    for (const row of pending ?? []) {
+      const result = await addShopifyCustomer(row.email);
+      await supabaseAdmin
+        .from("subscribers")
+        .update({ shopify_customer_id: result.id, shopify_error: result.error })
+        .eq("id", row.id);
+      if (result.id) synced += 1;
+      else lastError = result.error;
+    }
+
+    return { synced, pending: pending?.length ?? 0, lastError };
+  });
+
 export const getAdminStats = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ passcode: z.string().max(200) }).parse(data))
   .handler(async ({ data }) => {
