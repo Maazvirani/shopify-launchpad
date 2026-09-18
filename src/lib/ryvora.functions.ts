@@ -46,9 +46,10 @@ async function addShopifyCustomer(email: string) {
 }
 
 export const subscribe = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z.object({ email: z.string().trim().toLowerCase().email().max(254) }).parse(data),
-  )
+  .inputValidator((data: unknown) => {
+    console.log("subscribe input:", JSON.stringify(data));
+    return z.object({ email: z.string().trim().toLowerCase().max(254) }).parse(data);
+  })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
