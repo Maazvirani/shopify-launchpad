@@ -46,10 +46,19 @@ async function addShopifyCustomer(email: string) {
 }
 
 export const subscribe = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => {
-    console.log("subscribe input:", JSON.stringify(data));
-    return z.object({ email: z.string().trim().toLowerCase().max(254) }).parse(data);
-  })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        email: z
+          .string()
+          .trim()
+          .toLowerCase()
+          .max(254)
+          // Permissive, real-world email check (accepts +tags, long TLDs, etc.)
+          .regex(/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/, "Please enter a valid email address."),
+      })
+      .parse(data),
+  )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
